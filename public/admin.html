@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — Jugnu Textiles</title>
+<meta name="description" content="Admin">
+<meta property="og:title" content="Admin — Jugnu Textiles"><meta property="og:description" content="Admin"><meta property="og:type" content="website">
+<meta name="theme-color" content="#1f2a55">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23e7a923' opacity='.35'/><circle cx='16' cy='16' r='7' fill='%23e7a923'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<meta name="robots" content="noindex">
+</head>
+<body data-page="admin">
+<main class="wrap" style="padding-block:32px">
+  <section id="login" style="max-width:380px;margin:80px auto">
+    <form class="form-card" id="login-form"><h2>Admin login</h2><div id="login-msg"></div>
+      <div class="field"><label for="token">Admin password</label><input id="token" type="password" required autocomplete="current-password"></div>
+      <button class="btn btn-primary" style="width:100%">Log in</button></form>
+  </section>
+  <section id="dash" hidden>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h1 style="margin:0">Dashboard</h1>
+      <div style="display:flex;gap:8px"><a class="btn btn-ghost btn-sm" href="/" target="_blank">View site</a><button class="btn btn-ghost btn-sm" id="logout">Log out</button></div></div>
+    <div class="grid g4" id="stats" style="margin:24px 0"></div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:32px 0 12px"><h2 style="margin:0">Orders & inquiries</h2>
+      <div style="display:flex;gap:8px"><select id="f-status" style="width:auto"><option value="">All statuses</option><option>new</option><option>contacted</option><option>confirmed</option><option>in-production</option><option>dispatched</option><option>closed</option><option>cancelled</option></select>
+      <button class="btn btn-ghost btn-sm" id="refresh">Refresh</button></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Ref</th><th>Customer</th><th>Items / message</th><th style="width:220px">Status & notes</th></tr></thead><tbody id="inq-body"></tbody></table></div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:40px 0 12px"><h2 style="margin:0">Products</h2><button class="btn btn-primary btn-sm" id="new-prod">+ New product</button></div>
+    <div class="form-card" id="prod-editor" hidden style="margin-bottom:20px">
+      <h3 id="prod-title">Edit</h3><div id="prod-msg"></div>
+      <form id="prod-form">
+        <div class="row2"><div class="field"><label>Article no.</label><input name="id" required placeholder="JT-110"></div><div class="field"><label>Category</label><select name="category"></select></div></div>
+        <div class="row2"><div class="field"><label>Name (English)</label><input name="name" required></div><div class="field"><label>Name (Urdu)</label><input name="nameUr" dir="rtl"></div></div>
+        <div class="row2"><div class="field"><label>Fabric</label><input name="fabric" required></div><div class="field"><label>Finish</label><input name="finish"></div></div>
+        <div class="row2"><div class="field"><label>Thread count (0 = hide)</label><input name="threadCount" type="number" min="0"></div><div class="field"><label>Wholesale MOQ (pcs)</label><input name="moq" type="number" min="1"></div></div>
+        <div class="field"><label>Description</label><textarea name="description" rows="2"></textarea></div>
+        <div class="field"><label>Sizes & prices (one per line: <code>Size | Retail | Wholesale</code>)</label><textarea name="sizes" rows="3" style="font-family:monospace"></textarea></div>
+        <div class="row2"><div class="field"><label>Badge (Bestseller / New / Premium / Bulk)</label><input name="badge"></div><div class="field"><label>Photo URL (optional)</label><input name="imageUrl" placeholder="https://…"></div></div>
+        <div class="row2"><div class="field"><label>Illustration pattern</label><select name="ptype"><option>floral</option><option>stripe</option><option>check</option><option>dots</option><option>geometric</option><option>solid</option></select></div>
+          <div class="field"><label>Pattern colours (hex, comma separated)</label><input name="colors"></div></div>
+        <label style="margin-right:16px"><input type="checkbox" name="inStock"> In stock</label> <label><input type="checkbox" name="active"> Show on website</label>
+        <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary">Save</button><button type="button" class="btn btn-ghost" id="prod-cancel">Cancel</button><button type="button" class="btn btn-ghost" id="prod-delete" style="margin-inline-start:auto;color:var(--accent)">Delete</button></div>
+      </form>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th></th><th>Article</th><th>Sizes: retail / wholesale</th><th>MOQ</th><th>Status</th><th></th></tr></thead><tbody id="prod-body"></tbody></table></div>
+  </section>
+</main>
+<script type="module" src="/js/admin.js"></script></body></html>

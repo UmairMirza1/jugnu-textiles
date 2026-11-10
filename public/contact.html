@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact — Jugnu Textiles</title>
+<meta name="description" content="Visit or contact Jugnu Textiles in Ichra Bazaar, Lahore. Phone, WhatsApp, email and directions.">
+<meta property="og:title" content="Contact — Jugnu Textiles"><meta property="og:description" content="Visit or contact Jugnu Textiles in Ichra Bazaar, Lahore. Phone, WhatsApp, email and directions."><meta property="og:type" content="website">
+<meta name="theme-color" content="#1f2a55">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23e7a923' opacity='.35'/><circle cx='16' cy='16' r='7' fill='%23e7a923'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="contact">
+<main>
+<div class="page-head"><div class="wrap"><span class="eyebrow">Get in touch</span><h1 data-i18n="nav.contact">Contact us</h1><p class="lead">Call, WhatsApp, send a message or visit us in Ichra. We reply quickly during business hours.</p></div></div>
+<section class="section"><div class="wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px">
+  <div>
+    <div class="card feature" style="margin-bottom:20px">
+      <p><b>📍 Address</b><br><span id="c-address"></span></p>
+      <p><b>📞 Phone</b><br><span id="c-phone"></span></p>
+      <p><b>✉️ Email</b><br><span id="c-email"></span></p>
+      <p><b>🕘 Hours</b><br>Mon–Sat, 10:00 AM – 8:00 PM (closed Friday 1–3 PM for Jummah)</p>
+      <a class="btn btn-wa" id="c-wa" target="_blank" rel="noopener">💬 Chat on WhatsApp</a>
+    </div>
+    <iframe class="map" title="Map of Ichra, Lahore" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Ichra%20Bazaar%2C%20Lahore&z=15&output=embed"></iframe>
+  </div>
+  <form class="form-card" id="contact-form" novalidate style="align-self:start">
+    <h3>Send us a message</h3>
+    <div class="form-msg"></div>
+    <div class="row2"><div class="field"><label data-i18n="f.name">Name</label><input name="name" required></div>
+      <div class="field"><label data-i18n="f.phone">Phone / WhatsApp</label><input name="phone" required inputmode="tel" placeholder="03xx xxxxxxx"></div></div>
+    <div class="row2"><div class="field"><label data-i18n="f.email">Email (optional)</label><input name="email" type="email"></div>
+      <div class="field"><label data-i18n="f.city">City</label><input name="city"></div></div>
+    <div class="field"><label data-i18n="f.msg">Message</label><textarea name="message" rows="5" required></textarea></div>
+    <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button type="submit" class="btn btn-primary" style="width:100%" data-i18n="btn.send">Send message</button>
+  </form>
+</div></section>
+</main>
+<script type="module" src="/js/app.js"></script></body></html>

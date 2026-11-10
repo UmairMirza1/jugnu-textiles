@@ -1,0 +1,38 @@
+# One-click deploy on Render (https://render.com): New + → Blueprint → pick this repo.
+services:
+  - type: web
+    name: jugnu-textiles
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/site/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: jugnu-db
+          property: connectionString
+      - key: DATABASE_SSL
+        value: "false"
+      - key: ADMIN_TOKEN
+        generateValue: true
+      - key: SITE_NAME
+        value: Jugnu Textiles
+      - key: SITE_WHATSAPP
+        value: "923000000000"
+      - key: SITE_PHONE
+        value: "+92 300 0000000"
+      - key: SITE_EMAIL
+        value: info@jugnutextiles.pk
+      - key: SITE_ADDRESS
+        value: Main Ichra Bazaar, Ferozepur Road, Lahore, Pakistan
+
+databases:
+  - name: jugnu-db
+    plan: free
+    region: singapore
+    databaseName: jugnu
+    user: jugnu
