@@ -8,8 +8,16 @@ export const esc = (s: unknown) =>
 export const rs = (n: number) => 'Rs ' + Math.round(n).toLocaleString('en-PK');
 
 /* ---------------- API ---------------- */
+/** Static mode = GitHub Pages build: no server, data from JSON files, orders go to WhatsApp. */
+export const STATIC = document.querySelector('meta[name="jugnu-mode"]')?.getAttribute('content') === 'static';
+export const PHONE_RE = /^\+?[0-9][0-9\s-]{8,17}$/;
+export const makeRef = () => {
+  const d = new Date();
+  return `JT-${String(d.getFullYear()).slice(2)}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`;
+};
+const json = <T>(url: string) => fetch(url).then((r) => { if (!r.ok) throw new Error('Could not load data'); return r.json() as Promise<T>; });
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const res = await fetch('/api' + path, { ...init, headers: { 'Content-Type': 'application/json', ...(init.headers || {}) } });
+  const res = await fetch('api' + path, { ...init, headers: { 'Content-Type': 'application/json', ...(init.headers || {}) } });
   const body = await res.json().catch(() => ({}));
   if (!res.ok) {
     const msg = Array.isArray(body.message) ? body.message.join(', ') : body.message || `Request failed (${res.status})`;
@@ -18,9 +26,9 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   return body as T;
 }
 let siteP: Promise<SiteInfo> | null = null;
-export const getSite = () => (siteP ??= api<SiteInfo>('/site'));
+export const getSite = () => (siteP ??= STATIC ? json<SiteInfo>('data/site.json') : api<SiteInfo>('/site'));
 let productsP: Promise<Product[]> | null = null;
-export const getProducts = () => (productsP ??= api<Product[]>('/products'));
+export const getProducts = () => (productsP ??= STATIC ? json<Product[]>('data/products.json').then((l) => l.filter((p) => p.active)) : api<Product[]>('/products'));
 export const catName = (cats: Category[], id: string) => { const c = cats.find((x) => x.id === id); return c ? (lang() === 'ur' ? c.ur : c.en) : id; };
 export const waLink = (num: string, text: string) => `https://wa.me/${num}?text=${encodeURIComponent(text)}`;
 
@@ -150,10 +158,10 @@ const ICON = {
 export async function layout(active: string) {
   const site = await getSite().catch(() => null);
   const name = site?.name ?? 'Jugnu';
-  const nav = [['index', '/', 'nav.home', 'Home'], ['products', '/products', 'nav.products', 'Collection'], ['wholesale', '/wholesale', 'nav.wholesale', 'Wholesale'], ['about', '/about', 'nav.about', 'Craft'], ['contact', '/contact', 'nav.contact', 'Contact']];
+  const nav = [['index', './', 'nav.home', 'Home'], ['products', 'products', 'nav.products', 'Collection'], ['wholesale', 'wholesale', 'nav.wholesale', 'Wholesale'], ['about', 'about', 'nav.about', 'Craft'], ['contact', 'contact', 'nav.contact', 'Contact']];
   document.body.insertAdjacentHTML('afterbegin', `
   <header class="site"><div class="wrap">
-    <a class="logo" href="/" aria-label="${esc(name)} home"><span class="logo-mark" aria-hidden="true"></span>${esc(name)}</a>
+    <a class="logo" href="./" aria-label="${esc(name)} home"><span class="logo-mark" aria-hidden="true"></span>${esc(name)}</a>
     <nav class="main" id="nav">${nav.map(([k, h, key, label]) => `<a href="${h}" class="${k === active ? 'active' : ''}" data-i18n="${key}">${label}</a>`).join('')}</nav>
     <div class="hdr-actions">
       <button class="icon-btn" id="lang-toggle" aria-label="Switch language">اردو</button>
@@ -167,10 +175,10 @@ export async function layout(active: string) {
   <footer class="site"><div class="wrap">
     <p class="note">Prices are in Pakistani Rupees. Wholesale rates apply once an article reaches its minimum order quantity. Final price and delivery are confirmed on call or WhatsApp before dispatch. No payment is taken online.</p>
     <div class="cols">
-      <div><h4>Shop</h4><a href="/products">The collection</a><a href="/products?cat=bedsheet-set">Bedsheet sets</a><a href="/products?cat=comforter">Comforters</a><a href="/products?cat=fitted">Fitted sheets</a></div>
-      <div><h4>For business</h4><a href="/wholesale">Wholesale rates</a><a href="/wholesale#oem">Private label</a><a href="/products?cat=hotel">Hotel & hospital</a></div>
-      <div><h4>About</h4><a href="/about">Our craft</a><a href="/about#process">From cotton to bed</a></div>
-      <div><h4>Contact</h4>${site ? `<a href="tel:${esc(tel)}">${esc(site.phone)}</a><a href="${waLink(site.whatsapp, 'Assalam o Alaikum')}" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:${esc(site.email)}">${esc(site.email)}</a>` : ''}<a href="/contact">Visit us in Ichra</a></div>
+      <div><h4>Shop</h4><a href="products">The collection</a><a href="products?cat=bedsheet-set">Bedsheet sets</a><a href="products?cat=comforter">Comforters</a><a href="products?cat=fitted">Fitted sheets</a></div>
+      <div><h4>For business</h4><a href="wholesale">Wholesale rates</a><a href="wholesale#oem">Private label</a><a href="products?cat=hotel">Hotel & hospital</a></div>
+      <div><h4>About</h4><a href="about">Our craft</a><a href="about#process">From cotton to bed</a></div>
+      <div><h4>Contact</h4>${site ? `<a href="tel:${esc(tel)}">${esc(site.phone)}</a><a href="${waLink(site.whatsapp, 'Assalam o Alaikum')}" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:${esc(site.email)}">${esc(site.email)}</a>` : ''}<a href="contact">Visit us in Ichra</a></div>
     </div>
     <div class="base"><span>Copyright © ${year} ${esc(name)}. Made with care in Lahore, Pakistan.</span><span>${esc(site?.address ?? 'Ichra, Lahore')}</span></div>
   </div></footer>
@@ -209,7 +217,7 @@ async function renderCart() {
   const lines = cart.get().filter((l) => products.some((p) => p.id === l.productId));
   const body = $('#cart-body')!, foot = $('#cart-foot')!;
   if (!lines.length) {
-    body.innerHTML = `<p class="muted" style="padding:24px 0" data-i18n="cart.empty">Your list is empty. Add items from the products page.</p><a class="btn btn-blue" href="/products" data-i18n="btn.shop">Browse the collection</a>`;
+    body.innerHTML = `<p class="muted" style="padding:24px 0" data-i18n="cart.empty">Your list is empty. Add items from the products page.</p><a class="btn btn-blue" href="products" data-i18n="btn.shop">Browse the collection</a>`;
     foot.innerHTML = ''; applyLang(); return;
   }
   let total = 0;
@@ -240,9 +248,29 @@ async function renderCart() {
   $$<HTMLButtonElement>('[data-rm]', body).forEach((b) => (b.onclick = () => { const ls = cart.get(); ls.splice(+b.dataset.rm!, 1); cart.set(ls); renderCart(); }));
 
   const form = $<HTMLFormElement>('#order-form')!;
+  if (STATIC) {
+    const b = form.querySelector('button')!; b.removeAttribute('data-i18n'); b.className = 'btn btn-wa'; b.style.width = '100%'; b.textContent = 'Send order on WhatsApp';
+  }
   form.onsubmit = async (e) => {
     e.preventDefault();
     const fd = Object.fromEntries(new FormData(form)) as Record<string, string>;
+    if (STATIC) {
+      const name = (fd.name || '').trim(), phone = (fd.phone || '').trim();
+      if (name.length < 2 || !PHONE_RE.test(phone)) { $('#order-msg')!.innerHTML = '<div class="alert err">Please enter your name and a valid phone number.</div>'; return; }
+      const ref = makeRef(); let est = 0;
+      const summary = lines.map((l) => {
+        const p = products.find((x) => x.id === l.productId)!; const { unit, wholesale } = linePrice(p, l.size, l.qty); est += unit * l.qty;
+        return `• ${p.id} ${p.name}, ${l.size} × ${l.qty} = ${rs(unit * l.qty)}${wholesale ? ' (wholesale)' : ''}`;
+      }).join('\n');
+      const msg = `Assalam o Alaikum! New order ${ref} from the website:\n${summary}\nEstimated total: ${rs(est)}\n\nName: ${name}\nPhone: ${phone}${fd.city ? `\nCity: ${fd.city.trim()}` : ''}\nCustomer: ${fd.customerType}`;
+      const url = waLink(site.whatsapp, msg);
+      window.open(url, '_blank', 'noopener');
+      cart.clear();
+      body.innerHTML = `<div class="alert ok" style="margin-top:12px"><b>Almost done!</b><br>WhatsApp has opened with your order <b>${esc(ref)}</b>. Just press <b>Send</b> there. We will confirm the price and delivery with you.</div>
+        <a class="btn btn-wa" style="width:100%" target="_blank" rel="noopener" href="${url}">Open WhatsApp again</a>`;
+      foot.innerHTML = '';
+      return;
+    }
     const btn = form.querySelector('button')!; btn.disabled = true;
     try {
       const res = await api<{ reference: string; estimatedTotal: number }>('/inquiries', {

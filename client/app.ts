@@ -1,4 +1,4 @@
-import { $, $$, api, applyLang, observeReveal, bindProductGrid, catName, clean, esc, getProducts, getSite, lang, layout, openProduct, productArt, productCard, rs } from './lib.js';
+import { $, $$, api, applyLang, observeReveal, STATIC, PHONE_RE, makeRef, waLink, bindProductGrid, catName, clean, esc, getProducts, getSite, lang, layout, openProduct, productArt, productCard, rs } from './lib.js';
 import type { Product, SiteInfo } from './types.js';
 
 const page = document.body.dataset.page || 'index';
@@ -8,7 +8,7 @@ async function home() {
   const cats = site.categories.filter((c) => products.some((p) => p.category === c.id));
   const renderCats = () => ($('#cat-grid')!.innerHTML = cats.map((c) => {
     const p = products.find((x) => x.category === c.id)!;
-    return `<a class="cat-chip" href="/products?cat=${c.id}"><div class="art">${productArt(p)}</div><span>${esc(catName(site.categories, c.id))}</span></a>`;
+    return `<a class="cat-chip" href="products?cat=${c.id}"><div class="art">${productArt(p)}</div><span>${esc(catName(site.categories, c.id))}</span></a>`;
   }).join(''));
   const featured = [...products.filter((p) => p.badge && p.badge !== 'Bulk'), ...products.filter((p) => !p.badge)].slice(0, 8);
   const grid = $('#featured')!;
@@ -80,6 +80,7 @@ async function contact() {
 
 function bindForm(sel: string, type: 'quote' | 'contact', site: SiteInfo) {
   const form = $<HTMLFormElement>(sel); if (!form) return;
+  if (STATIC) { const b = form.querySelector<HTMLButtonElement>('button[type=submit]')!; b.removeAttribute('data-i18n'); b.className = 'btn btn-wa'; b.style.width = '100%'; b.textContent = 'Send on WhatsApp'; }
   form.onsubmit = async (e) => {
     e.preventDefault();
     const msgBox = $('.form-msg', form)!; const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
@@ -88,6 +89,18 @@ function bindForm(sel: string, type: 'quote' | 'contact', site: SiteInfo) {
     const extras = ['product', 'quantity', 'deadline'].filter((k) => fd[k]).map((k) => `${k[0].toUpperCase() + k.slice(1)}: ${fd[k]}`);
     ['product', 'quantity', 'deadline'].forEach((k) => delete fd[k]);
     if (extras.length) fd.message = [...extras, fd.message ?? ''].join('\n').trim();
+    if (STATIC) {
+      if ((fd.name ?? '').length < 2 || !PHONE_RE.test(fd.phone ?? '')) { msgBox.innerHTML = '<div class="alert err">Please enter your name and a valid phone number.</div>'; return; }
+      const ref = makeRef();
+      const labels: Record<string, string> = { name: 'Name', phone: 'Phone', email: 'Email', city: 'City', businessName: 'Business', customerType: 'Customer' };
+      const details = Object.entries(labels).filter(([k]) => fd[k]).map(([k, l]) => `${l}: ${fd[k]}`).join('\n');
+      const text = `Assalam o Alaikum! ${type === 'quote' ? 'Wholesale quote request' : 'Message'} ${ref} from the website.\n\n${details}${fd.message ? `\n\n${fd.message}` : ''}`;
+      const url = waLink(site.whatsapp, text);
+      window.open(url, '_blank', 'noopener');
+      form.reset();
+      msgBox.innerHTML = `<div class="alert ok">WhatsApp has opened with your ${type === 'quote' ? 'request' : 'message'} (ref <b>${esc(ref)}</b>). Just press <b>Send</b>. <a href="${url}" target="_blank" rel="noopener">Open again →</a></div>`;
+      return;
+    }
     btn.disabled = true;
     try {
       const res = await api<{ reference: string }>('/inquiries', { method: 'POST', body: JSON.stringify({ type, ...fd }) });
