@@ -26,15 +26,15 @@ export const waLink = (num: string, text: string) => `https://wa.me/${num}?text=
 
 /* ---------------- i18n (English lives in the HTML; Urdu here) ---------------- */
 const UR: Record<string, string> = {
-  'nav.home': 'ہوم', 'nav.products': 'پروڈکٹس', 'nav.wholesale': 'ہول سیل', 'nav.about': 'ہمارے بارے میں', 'nav.contact': 'رابطہ',
+  'nav.home': 'ہوم', 'nav.products': 'کلیکشن', 'nav.wholesale': 'ہول سیل', 'nav.about': 'ہنر', 'nav.contact': 'رابطہ',
   'top.made': 'اچھرہ، لاہور میں تیار کردہ — ملک بھر میں ڈیلیوری', 'cart.title': 'آرڈر لسٹ', 'cart.empty': 'آپ کی لسٹ خالی ہے۔ پروڈکٹس سے آئٹمز شامل کریں۔',
   'cart.total': 'اندازاً کل رقم', 'cart.send': 'آرڈر بھیجیں', 'cart.note': 'ہماری ٹیم قیمت اور ڈیلیوری کی تصدیق کے لیے فون/واٹس ایپ کرے گی۔ ابھی کوئی ادائیگی نہیں۔',
-  'btn.add': 'لسٹ میں شامل کریں', 'btn.details': 'تفصیل', 'btn.shop': 'پروڈکٹس دیکھیں', 'btn.quote': 'ہول سیل ریٹ لیں', 'btn.wa': 'واٹس ایپ پر آرڈر',
+  'btn.add': 'لسٹ میں شامل کریں', 'btn.details': 'تفصیل', 'btn.shop': 'کلیکشن دیکھیں', 'btn.quote': 'ہول سیل ریٹ', 'btn.wa': 'واٹس ایپ پر آرڈر',
   'btn.send': 'بھیجیں', 'f.name': 'نام', 'f.phone': 'فون / واٹس ایپ', 'f.city': 'شہر', 'f.type': 'آپ کون ہیں؟', 'f.msg': 'پیغام', 'f.business': 'دکان / کمپنی کا نام', 'f.email': 'ای میل',
-  'hero.eyebrow': '1995 سے بیڈ شیٹ مینوفیکچررز', 'hero.title': 'اچھرہ کی لومز سے آپ کے بیڈ تک', 'hero.lead': 'خالص کاٹن اور پولی کاٹن بیڈ شیٹس، کمفرٹرز اور ہوٹل لینن — براہ راست فیکٹری سے، ہول سیل اور ریٹیل قیمتوں پر۔',
+  'hero.eyebrow': '1995 سے بیڈ شیٹ مینوفیکچررز', 'hero.title': 'سکون کی نیند، خوبصورتی سے تیار۔', 'hero.lead': 'خالص کاٹن بیڈنگ، اچھرہ لاہور میں تیار۔<br>براہِ راست فیکٹری سے۔',
   'stat.years': 'سال کا تجربہ', 'stat.monthly': 'ماہانہ پیداوار (سیٹ)', 'stat.cities': 'شہروں میں ڈیلرز',
-  'sec.cats': 'کیٹیگریز', 'sec.featured': 'سب سے زیادہ فروخت', 'sec.why': 'ہم کیوں؟', 'sec.process': 'دھاگے سے بیڈ تک', 'sec.faq': 'عام سوالات',
-  'cta.title': 'دکاندار ہیں؟ فیکٹری ریٹ پر خریدیں۔', 'cta.text': 'کم از کم آرڈر صرف 6 پیس سے۔ پورے پاکستان میں کارگو ڈیلیوری۔',
+  'sec.cats': 'کیٹیگریز', 'sec.featured': 'نیا اور مقبول۔', 'sec.why': 'جگنو کیوں؟', 'sec.process': 'دھاگے سے بیڈ تک', 'sec.faq': 'سوالات۔',
+  'cta.title': 'دکاندار ہیں؟<br>فیکٹری ریٹ پر خریدیں۔', 'cta.text': 'کم از کم آرڈر صرف 6 پیس سے۔ پورے پاکستان میں کارگو ڈیلیوری۔',
   'filter.category': 'کیٹیگری', 'filter.fabric': 'کپڑا', 'filter.search': 'تلاش کریں…', 'sort.default': 'ترتیب: نمایاں', 'sort.low': 'قیمت: کم سے زیادہ', 'sort.high': 'قیمت: زیادہ سے کم',
   'p.wholesale': 'ہول سیل', 'p.moq': 'کم از کم آرڈر', 'p.size': 'سائز منتخب کریں', 'p.qty': 'تعداد',
 };
@@ -45,8 +45,9 @@ export function applyLang() {
   document.documentElement.dir = l === 'ur' ? 'rtl' : 'ltr';
   $$('[data-i18n]').forEach((el) => {
     const key = el.dataset.i18n!;
-    if (el.dataset.en === undefined) el.dataset.en = el.textContent ?? '';
-    el.textContent = l === 'ur' && UR[key] ? UR[key] : el.dataset.en;
+    if (el.dataset.en === undefined) el.dataset.en = el.innerHTML;
+    // UR strings are trusted constants; English is the page's own original markup
+    el.innerHTML = l === 'ur' && UR[key] ? UR[key] : el.dataset.en;
   });
   $$<HTMLInputElement>('[data-i18n-ph]').forEach((el) => {
     const key = el.dataset.i18nPh!;
@@ -82,18 +83,35 @@ function patternDef(id: string, p: Pattern, scale = 1): string {
 export function productArt(p: Pick<Product, 'pattern' | 'imageUrl' | 'name'>): string {
   if (p.imageUrl) return `<img src="${esc(p.imageUrl)}" alt="${esc(p.name)}" loading="lazy">`;
   const id = `pt${++artSeq}`;
+  const layers = [0, 1, 2, 3, 4].map((i) => `<rect x="70" y="${146 + i * 18}" width="260" height="18" rx="9" fill="url(#${id})"/><rect x="70" y="${146 + i * 18}" width="260" height="18" rx="9" fill="url(#${id}f)"/>`).join('');
   return `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(p.name)}">
-  <defs>${patternDef(id, p.pattern)}${patternDef(id + 's', p.pattern, 0.6)}
-    <linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient></defs>
-  <rect width="400" height="300" fill="#ece4d6"/><rect y="250" width="400" height="50" fill="#d7cab4"/>
-  <rect x="38" y="22" width="324" height="120" rx="14" fill="#6d4c35"/><rect x="50" y="34" width="300" height="96" rx="8" fill="#7d5a40"/>
-  <path d="M26 118 H374 L392 262 H8 Z" fill="url(#${id})"/>
-  <path d="M8 262 H392 V284 H8 Z" fill="url(#${id})"/><path d="M8 262 H392 V284 H8 Z" fill="#000" opacity=".16"/>
-  <path d="M26 118 H374 L392 262 H8 Z" fill="url(#${id}g)"/>
-  <path d="M22 150 H378 L381 172 H19 Z" fill="#fff" opacity=".28"/>
-  <rect x="64" y="90" width="124" height="54" rx="20" fill="url(#${id}s)"/><rect x="64" y="90" width="124" height="54" rx="20" fill="#fff" opacity=".18"/>
-  <rect x="212" y="90" width="124" height="54" rx="20" fill="url(#${id}s)"/><rect x="212" y="90" width="124" height="54" rx="20" fill="#fff" opacity=".18"/>
+  <defs>${patternDef(id, p.pattern, 0.55)}
+    <linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbfbfd"/><stop offset="1" stop-color="#ececf0"/></linearGradient>
+    <radialGradient id="${id}s"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>
+    <linearGradient id="${id}h" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".16"/><stop offset=".12" stop-color="#000" stop-opacity="0"/><stop offset=".88" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient>
+    <linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a8791f"/><stop offset=".5" stop-color="#e2bd66"/><stop offset="1" stop-color="#a8791f"/></linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#${id}b)"/>
+  <ellipse cx="200" cy="244" rx="168" ry="16" fill="url(#${id}s)"/>
+  <g transform="rotate(-5 210 110)"><rect x="104" y="72" width="226" height="84" rx="38" fill="url(#${id})"/><rect x="104" y="72" width="226" height="84" rx="38" fill="#fff" opacity=".22"/><rect x="104" y="72" width="226" height="84" rx="38" fill="none" stroke="#000" stroke-opacity=".06"/></g>
+  <path d="M84 120 H316 Q326 120 329 130 L334 146 H66 L71 130 Q74 120 84 120 Z" fill="url(#${id})"/>
+  <path d="M84 120 H316 Q326 120 329 130 L334 146 H66 L71 130 Q74 120 84 120 Z" fill="#fff" opacity=".2"/>
+  ${layers}
+  <rect x="70" y="146" width="260" height="90" rx="9" fill="url(#${id}h)"/>
+  <rect x="246" y="120" width="13" height="116" fill="url(#${id}g)"/>
+  <path d="M259 160 l14 4" stroke="#a8791f" stroke-width="1"/>
+  <rect x="272" y="156" width="44" height="22" rx="4" fill="#fff" stroke="#000" stroke-opacity=".08"/>
+  <text x="294" y="171" text-anchor="middle" font-family="-apple-system,Helvetica,Arial" font-size="8" font-weight="600" letter-spacing="1.6" fill="#1d1d1f">JUGNU</text>
 </svg>`;
+}
+
+/* ---------------- scroll reveal ---------------- */
+let io: IntersectionObserver | null = null;
+export function observeReveal(root: ParentNode = document) {
+  if (!('IntersectionObserver' in window)) { $$('.reveal', root).forEach((e) => e.classList.add('in')); return; }
+  io ??= new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io!.unobserve(e.target); } }), { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  $$('.reveal:not(.in)', root).forEach((e) => io!.observe(e));
 }
 
 /* ---------------- toast ---------------- */
@@ -131,13 +149,11 @@ const ICON = {
 
 export async function layout(active: string) {
   const site = await getSite().catch(() => null);
-  const name = site?.name ?? 'Jugnu Textiles';
-  const nav = [['index', '/', 'nav.home', 'Home'], ['products', '/products', 'nav.products', 'Products'], ['wholesale', '/wholesale', 'nav.wholesale', 'Wholesale'], ['about', '/about', 'nav.about', 'About & Process'], ['contact', '/contact', 'nav.contact', 'Contact']];
+  const name = site?.name ?? 'Jugnu';
+  const nav = [['index', '/', 'nav.home', 'Home'], ['products', '/products', 'nav.products', 'Collection'], ['wholesale', '/wholesale', 'nav.wholesale', 'Wholesale'], ['about', '/about', 'nav.about', 'Craft'], ['contact', '/contact', 'nav.contact', 'Contact']];
   document.body.insertAdjacentHTML('afterbegin', `
-  <div class="topbar"><div class="wrap"><span data-i18n="top.made">Manufactured in Ichra, Lahore — delivery all over Pakistan</span>
-    <span>${site ? `<a href="tel:${esc(site.phone.replace(/\s/g, ''))}">${esc(site.phone)}</a> · <a href="mailto:${esc(site.email)}">${esc(site.email)}</a>` : ''}</span></div></div>
   <header class="site"><div class="wrap">
-    <a class="logo" href="/"><span class="logo-mark" aria-hidden="true"></span>${esc(name)}</a>
+    <a class="logo" href="/" aria-label="${esc(name)} home"><span class="logo-mark" aria-hidden="true"></span>${esc(name)}</a>
     <nav class="main" id="nav">${nav.map(([k, h, key, label]) => `<a href="${h}" class="${k === active ? 'active' : ''}" data-i18n="${key}">${label}</a>`).join('')}</nav>
     <div class="hdr-actions">
       <button class="icon-btn" id="lang-toggle" aria-label="Switch language">اردو</button>
@@ -146,17 +162,22 @@ export async function layout(active: string) {
     </div></div></header>`);
 
   const year = new Date().getFullYear();
+  const tel = site ? site.phone.replace(/\s/g, '') : '';
   document.body.insertAdjacentHTML('beforeend', `
-  <footer class="site"><div class="wrap"><div class="cols">
-    <div><a class="logo" href="/"><span class="logo-mark"></span>${esc(name)}</a><p style="margin-top:12px">Bedsheet manufacturers & wholesalers since 1995. Direct from our Ichra workshop to shops, hotels and homes across Pakistan.</p></div>
-    <div><h4>Shop</h4><a href="/products">All products</a><a href="/products?cat=bedsheet-set">Bedsheet sets</a><a href="/products?cat=comforter">Comforters</a><a href="/products?cat=hotel">Hotel & hospital</a></div>
-    <div><h4>Business</h4><a href="/wholesale">Wholesale rates</a><a href="/wholesale#oem">Private label</a><a href="/about#process">Our process</a><a href="/contact">Contact</a></div>
-    <div><h4>Visit us</h4><p>${esc(site?.address ?? 'Ichra, Lahore')}</p>${site ? `<a href="tel:${esc(site.phone.replace(/\s/g, ''))}">📞 ${esc(site.phone)}</a><a href="${waLink(site.whatsapp, 'Assalam o Alaikum')}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ''}</div>
-  </div><div class="base"><span>© ${year} ${esc(name)}. All rights reserved.</span><span>Made in Pakistan 🇵🇰</span></div></div></footer>
+  <footer class="site"><div class="wrap">
+    <p class="note">Prices are in Pakistani Rupees. Wholesale rates apply once an article reaches its minimum order quantity. Final price and delivery are confirmed on call or WhatsApp before dispatch. No payment is taken online.</p>
+    <div class="cols">
+      <div><h4>Shop</h4><a href="/products">The collection</a><a href="/products?cat=bedsheet-set">Bedsheet sets</a><a href="/products?cat=comforter">Comforters</a><a href="/products?cat=fitted">Fitted sheets</a></div>
+      <div><h4>For business</h4><a href="/wholesale">Wholesale rates</a><a href="/wholesale#oem">Private label</a><a href="/products?cat=hotel">Hotel & hospital</a></div>
+      <div><h4>About</h4><a href="/about">Our craft</a><a href="/about#process">From cotton to bed</a></div>
+      <div><h4>Contact</h4>${site ? `<a href="tel:${esc(tel)}">${esc(site.phone)}</a><a href="${waLink(site.whatsapp, 'Assalam o Alaikum')}" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:${esc(site.email)}">${esc(site.email)}</a>` : ''}<a href="/contact">Visit us in Ichra</a></div>
+    </div>
+    <div class="base"><span>Copyright © ${year} ${esc(name)}. Made with care in Lahore, Pakistan.</span><span>${esc(site?.address ?? 'Ichra, Lahore')}</span></div>
+  </div></footer>
   ${site ? `<a class="wa-float" href="${waLink(site.whatsapp, 'Assalam o Alaikum, I want to ask about your bedsheets.')}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">${ICON.wa}</a>` : ''}
   <div class="scrim" id="scrim"></div>
   <aside class="drawer" id="drawer" aria-label="Order list">
-    <header><h3 style="margin:0" data-i18n="cart.title">Your order list</h3><button class="icon-btn" id="cart-close" aria-label="Close">✕</button></header>
+    <header><h3 data-i18n="cart.title">Your order list</h3><button class="icon-btn" id="cart-close" aria-label="Close" style="background:var(--gray)">✕</button></header>
     <div class="content" id="cart-body"></div>
     <footer id="cart-foot"></footer>
   </aside>
@@ -170,6 +191,7 @@ export async function layout(active: string) {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverlays(); });
   updateCount();
   applyLang();
+  observeReveal();
 }
 
 export function closeOverlays() {
@@ -187,7 +209,7 @@ async function renderCart() {
   const lines = cart.get().filter((l) => products.some((p) => p.id === l.productId));
   const body = $('#cart-body')!, foot = $('#cart-foot')!;
   if (!lines.length) {
-    body.innerHTML = `<p class="muted" style="padding:24px 0" data-i18n="cart.empty">Your list is empty. Add items from the products page.</p><a class="btn btn-primary" href="/products" data-i18n="btn.shop">Browse products</a>`;
+    body.innerHTML = `<p class="muted" style="padding:24px 0" data-i18n="cart.empty">Your list is empty. Add items from the products page.</p><a class="btn btn-blue" href="/products" data-i18n="btn.shop">Browse the collection</a>`;
     foot.innerHTML = ''; applyLang(); return;
   }
   let total = 0;
@@ -206,7 +228,7 @@ async function renderCart() {
       <div class="row2"><div class="field"><label data-i18n="f.city">City</label><input name="city" autocomplete="address-level2"></div>
       <div class="field"><label data-i18n="f.type">You are a…</label><select name="customerType"><option>Individual</option><option>Retailer / Shop</option><option>Wholesaler</option><option>Hotel / Guest house</option><option>Hospital</option><option>Online seller</option></select></div></div>
       <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <button class="btn btn-primary" style="width:100%" data-i18n="cart.send">Send order request</button>
+      <button class="btn btn-blue" style="width:100%" data-i18n="cart.send">Send order request</button>
       <p class="muted" style="font-size:.8rem;margin:.6em 0 0" data-i18n="cart.note">Our team will call / WhatsApp you to confirm price and delivery. No payment now.</p>
     </form>`;
   applyLang();
@@ -249,9 +271,8 @@ export function productCard(p: Product, cats: Category[]) {
     <div class="body"><span class="sku">${esc(p.id)} · ${esc(catName(cats, p.category))}</span>
       <h3>${esc(lang() === 'ur' && p.nameUr ? p.nameUr : p.name)}</h3>
       <span class="spec">${esc(p.fabric)}${p.threadCount ? ` · ${p.threadCount} TC` : ''}</span>
-      <div class="price"><b>${rs(s.retail)}</b><small>${t('p.wholesale', 'Wholesale')} ${rs(s.wholesale)} (${p.moq}+ pcs)</small></div>
-      <div class="actions"><button class="btn btn-ghost btn-sm" data-open="${esc(p.id)}" data-i18n="btn.details">Details</button>
-      <button class="btn btn-primary btn-sm" data-quick="${esc(p.id)}" ${p.inStock ? 'data-i18n="btn.add">Add to list' : 'disabled>Out of stock'}</button></div>
+      <div class="price"><b>From ${rs(s.retail)}</b><small>${t('p.wholesale', 'Wholesale')} ${rs(s.wholesale)} · ${p.moq}+ pcs</small></div>
+      <div class="actions"><button class="btn btn-blue btn-sm" data-quick="${esc(p.id)}" ${p.inStock ? 'data-i18n="btn.add">Add to list' : 'disabled>Out of stock'}</button><button class="btn btn-ghost btn-sm" data-open="${esc(p.id)}" data-i18n="btn.details">Learn more</button></div>
     </div></article>`;
 }
 
@@ -274,11 +295,11 @@ export async function openProduct(p: Product, cats: Category[]) {
     <p class="muted">${esc(p.description)}</p>
     <dl class="specs"><dt>Fabric</dt><dd>${esc(p.fabric)}</dd>${p.threadCount ? `<dt>Thread count</dt><dd>${p.threadCount}</dd>` : ''}<dt>Finish</dt><dd>${esc(p.finish)}</dd><dt>${t('p.moq', 'Wholesale MOQ')}</dt><dd>${p.moq} pcs (mix sizes allowed)</dd></dl>
     <form id="pform"><b style="font-size:.9rem" data-i18n="p.size">Choose size</b><div class="size-opts">
-      ${p.sizes.map((s, i) => `<label><input type="radio" name="size" value="${esc(s.size)}" ${i === 0 ? 'checked' : ''}>${esc(s.size)}<br><b>${rs(s.retail)}</b> <small class="muted">/ ${rs(s.wholesale)} wholesale</small></label>`).join('')}
+      ${p.sizes.map((s, i) => `<label><input type="radio" name="size" value="${esc(s.size)}" ${i === 0 ? 'checked' : ''}><span>${esc(s.size)}</span><span style="text-align:end"><b style="font-weight:500">${rs(s.retail)}</b><br><small class="muted">${rs(s.wholesale)} wholesale</small></span></label>`).join('')}
     </div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><div class="qty"><button type="button" data-d="-1">−</button><input name="qty" type="number" min="1" value="1" aria-label="Quantity"><button type="button" data-d="1">+</button></div>
       <span id="pprice" class="muted" style="font-size:.9rem"></span></div>
-    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap"><button class="btn btn-primary" ${p.inStock ? '' : 'disabled'} data-i18n="btn.add">Add to list</button>
+    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap"><button class="btn btn-blue" ${p.inStock ? '' : 'disabled'} data-i18n="btn.add">Add to list</button>
       <a class="btn btn-wa" id="pwa" target="_blank" rel="noopener" data-i18n="btn.wa">Order on WhatsApp</a></div></form></div></div>`;
   m.classList.add('open'); $('#scrim')!.classList.add('open'); document.body.style.overflow = 'hidden';
   const f = $<HTMLFormElement>('#pform', m)!; const qtyEl = f.elements.namedItem('qty') as HTMLInputElement;

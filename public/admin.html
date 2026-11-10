@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin — Jugnu Textiles</title>
+<title>Admin — Jugnu</title>
 <meta name="description" content="Admin">
-<meta property="og:title" content="Admin — Jugnu Textiles"><meta property="og:description" content="Admin"><meta property="og:type" content="website">
+<meta property="og:title" content="Admin — Jugnu"><meta property="og:description" content="Admin"><meta property="og:type" content="website">
 <meta name="theme-color" content="#1f2a55">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23e7a923' opacity='.35'/><circle cx='16' cy='16' r='7' fill='%23e7a923'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,7 @@
   <section id="login" style="max-width:380px;margin:80px auto">
     <form class="form-card" id="login-form"><h2>Admin login</h2><div id="login-msg"></div>
       <div class="field"><label for="token">Admin password</label><input id="token" type="password" required autocomplete="current-password"></div>
-      <button class="btn btn-primary" style="width:100%">Log in</button></form>
+      <button class="btn btn-blue" style="width:100%">Log in</button></form>
   </section>
   <section id="dash" hidden>
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h1 style="margin:0">Dashboard</h1>
@@ -30,7 +30,7 @@
       <button class="btn btn-ghost btn-sm" id="refresh">Refresh</button></div></div>
     <div class="table-wrap"><table><thead><tr><th>Ref</th><th>Customer</th><th>Items / message</th><th style="width:220px">Status & notes</th></tr></thead><tbody id="inq-body"></tbody></table></div>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;margin:40px 0 12px"><h2 style="margin:0">Products</h2><button class="btn btn-primary btn-sm" id="new-prod">+ New product</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:40px 0 12px"><h2 style="margin:0">Products</h2><button class="btn btn-blue btn-sm" id="new-prod">+ New product</button></div>
     <div class="form-card" id="prod-editor" hidden style="margin-bottom:20px">
       <h3 id="prod-title">Edit</h3><div id="prod-msg"></div>
       <form id="prod-form">
@@ -44,7 +44,7 @@
         <div class="row2"><div class="field"><label>Illustration pattern</label><select name="ptype"><option>floral</option><option>stripe</option><option>check</option><option>dots</option><option>geometric</option><option>solid</option></select></div>
           <div class="field"><label>Pattern colours (hex, comma separated)</label><input name="colors"></div></div>
         <label style="margin-right:16px"><input type="checkbox" name="inStock"> In stock</label> <label><input type="checkbox" name="active"> Show on website</label>
-        <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary">Save</button><button type="button" class="btn btn-ghost" id="prod-cancel">Cancel</button><button type="button" class="btn btn-ghost" id="prod-delete" style="margin-inline-start:auto;color:var(--accent)">Delete</button></div>
+        <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-blue">Save</button><button type="button" class="btn btn-ghost" id="prod-cancel">Cancel</button><button type="button" class="btn btn-ghost" id="prod-delete" style="margin-inline-start:auto;color:var(--accent)">Delete</button></div>
       </form>
     </div>
     <div class="table-wrap"><table><thead><tr><th></th><th>Article</th><th>Sizes: retail / wholesale</th><th>MOQ</th><th>Status</th><th></th></tr></thead><tbody id="prod-body"></tbody></table></div>

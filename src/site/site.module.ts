@@ -7,7 +7,7 @@ class SiteController {
   info() {
     const e = process.env;
     return {
-      name: e.SITE_NAME || 'Jugnu Textiles',
+      name: e.SITE_NAME || 'Jugnu',
       whatsapp: e.SITE_WHATSAPP || '923000000000',
       phone: e.SITE_PHONE || '+92 300 0000000',
       email: e.SITE_EMAIL || 'info@jugnutextiles.pk',

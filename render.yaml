@@ -20,7 +20,7 @@ services:
       - key: ADMIN_TOKEN
         generateValue: true
       - key: SITE_NAME
-        value: Jugnu Textiles
+        value: Jugnu
       - key: SITE_WHATSAPP
         value: "923000000000"
       - key: SITE_PHONE

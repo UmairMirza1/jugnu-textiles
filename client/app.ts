@@ -1,22 +1,16 @@
-import { $, $$, api, applyLang, bindProductGrid, catName, clean, esc, getProducts, getSite, lang, layout, openProduct, productArt, productCard, rs } from './lib.js';
+import { $, $$, api, applyLang, observeReveal, bindProductGrid, catName, clean, esc, getProducts, getSite, lang, layout, openProduct, productArt, productCard, rs } from './lib.js';
 import type { Product, SiteInfo } from './types.js';
 
 const page = document.body.dataset.page || 'index';
 
 async function home() {
   const [products, site] = await Promise.all([getProducts(), getSite()]);
-  // hero art
-  const hero = products.filter((p) => p.badge === 'Bestseller');
-  const a = hero[0] ?? products[0], b = hero[1] ?? products[1];
-  if (a) $('#hero-1')!.innerHTML = productArt(a);
-  if (b) $('#hero-2')!.innerHTML = productArt(b);
-  // categories — first product of each category as tile art
   const cats = site.categories.filter((c) => products.some((p) => p.category === c.id));
   const renderCats = () => ($('#cat-grid')!.innerHTML = cats.map((c) => {
     const p = products.find((x) => x.category === c.id)!;
-    return `<a class="cat-tile" href="/products?cat=${c.id}"><div class="art">${productArt(p)}</div><span>${esc(catName(site.categories, c.id))}</span></a>`;
+    return `<a class="cat-chip" href="/products?cat=${c.id}"><div class="art">${productArt(p)}</div><span>${esc(catName(site.categories, c.id))}</span></a>`;
   }).join(''));
-  const featured = products.filter((p) => p.badge).slice(0, 4);
+  const featured = [...products.filter((p) => p.badge && p.badge !== 'Bulk'), ...products.filter((p) => !p.badge)].slice(0, 8);
   const grid = $('#featured')!;
   const renderFeatured = () => { grid.innerHTML = featured.map((p) => productCard(p, site.categories)).join(''); applyLang(); };
   renderCats(); renderFeatured();
@@ -111,6 +105,7 @@ function bindForm(sel: string, type: 'quote' | 'contact', site: SiteInfo) {
   const run: Record<string, () => Promise<void>> = { index: home, products: catalog, wholesale, contact };
   try { await run[page]?.(); } catch (e) { console.error(e); }
   applyLang();
+  observeReveal();
   void lang;
 })();
 export type { Product };

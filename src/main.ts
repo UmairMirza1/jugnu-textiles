@@ -11,6 +11,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }));
   const port = Number(process.env.PORT) || 3000;
   await app.listen(port, '0.0.0.0');
-  console.log(`Jugnu Textiles running on http://localhost:${port}`);
+  console.log(`Jugnu running on http://localhost:${port}`);
 }
 bootstrap();

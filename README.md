@@ -1,4 +1,4 @@
-# Jugnu Textiles: website and order system
+# Jugnu: website and order system
 
 The website for a family bedsheet manufacturer in **Ichra, Lahore**.
 It is built with **TypeScript, NestJS and PostgreSQL**.
